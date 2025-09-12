@@ -12,7 +12,7 @@ import skimage.filters as skfilters
 
 def process(sliding_window=15):
     # name of the input file
-    imname = 'melons.tif'
+    imname = 'cathedral.jpg'
 
     # read in the image
     im = skio.imread(imname)
@@ -32,14 +32,14 @@ def process(sliding_window=15):
     # functions that might be useful for aligning the images include:
     # np.roll, np.sum, sk.transform.rescale (for multiscale)
 
-    one, two, ag = align(g, b, sliding_window)
-    three, four, ar = align(r, b, sliding_window)
+    one, two, ag = pyramid_speedup(g, b, sliding_window)
+    three, four, ar = pyramid_speedup(r, b, sliding_window)
     # create a color image
     im_out = np.dstack([ar, ag, b])
     im_out_uint8 = sk.img_as_ubyte(im_out)
 
     # save the image
-    fname = 'ncc_melons.jpg'
+    fname = 'new_cathedral.jpg'
     print("Green Blue Alignment: " + str(one) + ", " + str(two))
     print("Red Blue Alignment: " + str(three) + ", " + str(four))
     skio.imsave(fname, im_out_uint8)
