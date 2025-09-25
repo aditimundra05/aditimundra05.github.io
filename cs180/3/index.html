@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180 Project 2: Fun with Filters and Frequencies</title>
+    <style>
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background-color: #fff;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-top: 2em;
+            margin-bottom: 1em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+
+        header {
+            font-size: 1em;
+            font-weight: 400;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        
+        p {
+            margin-bottom: 1em;
+            text-align: justify;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1em auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 2em 0;
+            align-items: start;
+        }
+        
+        .comparison-item {
+            text-align: center;
+        }
+        
+        .comparison-item img {
+            margin: 0 auto 10px;
+            max-height: 400px;
+            object-fit: contain;
+        }
+        
+        .comparison-item .caption {
+            font-size: 0.9em;
+            color: #586069;
+            font-style: italic;
+            margin-bottom: 1em;
+        }
+        
+        .three-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 2em 0;
+            align-items: start;
+        }
+        
+        .three-grid .item {
+            text-align: center;
+        }
+        
+        .three-grid .item img {
+            margin: 0 auto 8px;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        
+        .three-grid .item .caption {
+            font-size: 0.85em;
+            color: #586069;
+            font-style: italic;
+        }
+        
+        .math-formula {
+            text-align: center;
+            margin: 2em 0;
+            padding: 1.5em;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1em;
+            border-left: 4px solid #0366d6;
+        }
+        
+        .algorithm-step {
+            background-color: #e8f4f8;
+            border-left: 4px solid #0366d6;
+            padding: 1.5em;
+            margin: 2em 0;
+        }
+        
+        .observation-box {
+            background-color: #fff5b7;
+            border-left: 4px solid #ffb300;
+            padding: 1.5em;
+            margin: 2em 0;
+        }
+        
+        code {
+            background-color: rgba(27,31,35,0.05);
+            border-radius: 3px;
+            font-size: 85%;
+            margin: 0;
+            padding: 0.2em 0.4em;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+        
+        ul {
+            padding-left: 2em;
+        }
+        
+        li {
+            margin-bottom: 0.5em;
+        }
+        
+        .section-divider {
+            border-top: 2px solid #e1e4e8;
+            margin: 3em 0 2em 0;
+        }
+        
+        .filter-notation {
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 1em;
+            margin: 1.5em 0;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .single-image {
+            text-align: center;
+            margin: 2em 0;
+        }
+        
+        .single-image img {
+            max-width: 600px;
+        }
+        
+        .single-image .caption {
+            font-size: 0.9em;
+            color: #586069;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .code-block {
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 1em;
+            margin: 1.5em 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <header>https://aditimundra05.github.io/cs180/3/index.html</header>
+    <h1>Project 2: Filters and Frequencies</h1>
+    <h2>Part 1: Filters</h2>
+    
+    <p>In this part, we'll take x and y partial derivatives of images by convolving them with the finite difference filters D<sub>x</sub> and D<sub>y</sub>.</p>
+
+    <div class="filter-notation">
+        <strong>Filter Definitions:</strong><br>
+        D<sub>x</sub> = [1, 0, -1] (horizontal finite difference)<br>
+        D<sub>y</sub> = [1; 0; -1]<sup>T</sup> (vertical finite difference)<br>
+        G = Gaussian filter with specified σ (sigma)
+    </div>
+
+    <h3>Part 1.1: Convolutions from Scratch</h3>
+    
+    <p>First, I implemented 2D convolution operations using both four-loop and two-loop approaches with zero-padding support. I compared these implementations against <code>scipy.signal.convolve2d</code> to ensure correctness.</p>
+
+    <div class="algorithm-step">
+        <strong>Implementation Approaches:</strong><br>
+        • <strong>Four-loop implementation:</strong> Nested loops over output height, width, kernel height, and kernel width<br>
+        • <strong>Two-loop implementation:</strong> Loops over output height and width with vectorized kernel operations<br>
+        • <strong>Scipy reference:</strong> scipy.signal.convolve2d function
+    </div>
+
+    <div class="code-block">def convolution_four_loops(img, filter):
+    h, w = img.shape
+    fh, fw = filter.shape
+    filter = np.flipud(np.fliplr(filter))  # Flip for convolution
+    output = np.zeros((h, w))
+    padded = np.zeros((h + 2 * (fh // 2), w + 2 * (fw // 2)))
+    padded[(fh // 2) : (fh // 2) + h, (fw // 2) : (fw // 2) + w] = img
+    
+    for x in range(h):
+        for y in range(w):
+            conv = 0.0
+            for fx in range(fh):
+                for fy in range(fw):
+                    conv += filter[fx, fy] * padded[x + fx, y + fy]
+            output[x, y] = conv
+    return np.clip(output, 0, 1)</div>
+
+    <div class="code-block">def convolution_two_loops(img, filter):
+    h, w = img.shape
+    fh, fw = filter.shape
+    filter = np.flipud(np.fliplr(filter))  # Flip for convolution
+    output = np.zeros((h, w))
+    padded = np.zeros((h + 2 * (fh // 2), w + 2 * (fw // 2)))
+    padded[(fh // 2) : (fh // 2) + h, (fw // 2) : (fw // 2) + w] = img
+    
+    for x in range(h):
+        for y in range(w):
+            conv = padded[x:x+fh, y:y+fw]
+            output[x, y] = np.sum(conv * filter)
+    return output</div>
+
+    <p>Applied a 9×9 box filter to demonstrate equivalence across all three implementations:</p>
+
+    <div class="single-image">
+        <img src="face.jpg" alt="Original face image" style="max-width: 400px;">
+        <div class="caption">Original face image</div>
+    </div>
+
+    <div class="three-grid">
+        <div class="item">
+            <img src="box_convolved_four_face.jpg" alt="Four loops result">
+            <div class="caption">Four-loop convolution result</div>
+        </div>
+        <div class="item">
+            <img src="box_convolved_two_face.jpg" alt="Two loops result">
+            <div class="caption">Two-loop convolution result</div>
+        </div>
+        <div class="item">
+            <img src="box_convolved_function_face.jpg" alt="Scipy result">
+            <div class="caption">Scipy convolution result</div>
+        </div>
+    </div>
+
+    <div class="observation-box">
+        <strong>Runtime Analysis / Boundary Handling:</strong><br>
+        <p>The four-loop implementation had the slowest runtime due to the nested loops, while the two-loop implementation had 
+            a moderate speedup because the kernel size was indexed instead of being iterated over. However, signal.scipy.convolve2d 
+            had the fastest runtime overall since it is optimized C code. All implementations used zero-padding to handle boundaries, 
+            specifically mode='same', boundary='fill', fillvalue=0 for the scipy function. The image is padded with zeros by 
+            (K<sub>h</sub>//2, K<sub>w</sub>//2) on all sides, ensuring the output maintains the same dimensions as the input image while properly handling edge pixels.</p>
+    </div>
+
+    <p>Applied finite difference operators D<sub>x</sub> and D<sub>y</sub> for edge detection:</p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="dx_convolved_face.jpg" alt="Dx face">
+            <div class="caption">D<sub>x</sub> = [-1, 0, 1] (horizontal edges)</div>
+        </div>
+        <div class="comparison-item">
+            <img src="dy_convolved_face.jpg" alt="Dy face">
+            <div class="caption">D<sub>y</sub> = [1; 0; -1]<sup>T</sup> (vertical edges)</div>
+        </div>
+    </div>
+
+    <h3>Part 1.2: Finite Difference Operator</h3>
+    
+    <p>Here, I applied the finite difference operators to the image to demonstrate edge detection capabilities.</p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="cameraman.png" alt="Original cameraman">
+            <div class="caption">Original cameraman image</div>
+        </div>
+        <div class="comparison-item">
+            <img src="grad_mag_cameraman.png" alt="Gradient magnitude">
+            <div class="caption">Gradient magnitude |∇I|</div>
+        </div>
+    </div>
+
+    <div class="three-grid">
+        <div class="item">
+            <img src="dx_cameraman.png" alt="Dx cameraman">
+            <div class="caption">∂I/∂x = I ⊗ D<sub>x</sub></div>
+        </div>
+        <div class="item">
+            <img src="dy_cameraman.png" alt="Dy cameraman">
+            <div class="caption">∂I/∂y = I ⊗ D<sub>y</sub></div>
+        </div>
+        <div class="item">
+            <img src="0.35_cameraman.png" alt="Binarized edges">
+            <div class="caption">Binarized edges (threshold = 0.35)</div>
+        </div>
+    </div>
+
+    <div class="math-formula">
+        <strong>Gradient Magnitude Computation:</strong><br>
+        |∇I| = √((∂I/∂x)² + (∂I/∂y)²)<br>
+        where ∂I/∂x and ∂I/∂y are computed by convolving I with D<sub>x</sub> and D<sub>y</sub> respectively.
+    </div>
+
+    <p>To create an edge detection image, we select a threshold τ and at each position evaluate whether the gradient magnitude 
+        is greater than τ. The result is a binary image where pixel value 1 corresponds to the presence of an edge and 0 to the 
+        absence of an edge. I tried a couple of thresholds (0.1, 0.2, 0.25, 0.3, 0.4) and 0.35 provided the best balance between 
+        finding edges and removing noise. For example, the threshold of 0.2 had more noise (many specs in the background of the 
+        grass) and the threshold of 0.4 took away too many edges to properly show the man's figure.</p>
+
+    <h3>Part 1.3: Derivative of Gaussian (DoG) Filter</h3>
+    
+    <p>First, I created a gaussian filter using cv2.getGaussianKernel() with a sigma value of 0.5 and n = int(2*np.ceil(3*sigma) + 1). 
+        To make it 2D, I took the outer product of this 1D gaussian with its transpose. Then, I convolved the image with the gaussian 
+        to smoothen it before taking its x and y partial derivatives like before, getting the gradient magnitude image, and the edge image 
+        with a lower threshold than before (0.2 showed the best results). This is compared to the same thing with a single convolution of the 
+        gaussian and Dx/Dy (called the derivative of the gaussian), and generating the respective images for comparison.</p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="smoothed_mag_cameraman.png" alt="Smoothed gradient magnitude">
+            <div class="caption">Smoothed gradient magnitude |∇(G ⊗ I)|</div>
+        </div>
+        <div class="comparison-item">
+            <img src="DoG_mag_cameraman.png" alt="DoG gradient magnitude">
+            <div class="caption">DoG gradient magnitude |(DoG<sub>x</sub> ⊗ I, DoG<sub>y</sub> ⊗ I)|</div>
+        </div>
+        <div class="comparison-item">
+            <img src="0.2_smoothed_mag_cameraman.png" alt="Edge smoothed gradient magnitude">
+            <div class="caption">|∇(G ⊗ I)| > 0.2</div>
+        </div>
+        <div class="comparison-item">
+            <img src="0.2_DoG_mag_cameraman.png" alt="Edge DoG gradient magnitude">
+            <div class="caption">|(DoG<sub>x</sub> ⊗ I, DoG<sub>y</sub> ⊗ I)| > 0.2</div>
+        </div>
+    </div>
+
+    <div class="three-grid">
+        <div class="item">
+            <img src="smoothed_dx_cameraman.png" alt="Smoothed dx">
+            <div class="caption">∂(G ⊗ I)/∂x</div>
+        </div>
+        <div class="item">
+            <img src="smoothed_dy_cameraman.png" alt="Smoothed dy">
+            <div class="caption">∂(G ⊗ I)/∂y</div>
+        </div>
+        <div class="item">
+            <div style="margin: 20px 0;">
+                <p style="font-size: 0.9em; text-align: center;"><strong>vs.</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="three-grid">
+        <div class="item">
+            <img src="DoG_x_cameraman.png" alt="DoG x result">
+            <div class="caption">DoG<sub>x</sub> ⊗ I</div>
+        </div>
+        <div class="item">
+            <img src="DoG_y_cameraman.png" alt="DoG y result">
+            <div class="caption">DoG<sub>y</sub> ⊗ I</div>
+        </div>
+        <div class="item">
+            <div style="margin: 20px 0; padding: 10px; background-color: #e8f4f8; border-radius: 6px;">
+                <p style="font-size: 0.85em; margin: 0; text-align: center;">Results are identical due to associativity of convolution!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="three-grid">
+        <div class="item">
+            <img src="gaussian.png" style="width: 500%;" alt="Gaussian">
+            <div class="caption">Gaussian</div>
+        </div>
+        <div class="item">
+            <img src="DoG_x.png" style="width: 500%;" alt="DoG x">
+            <div class="caption">DoG<sub>x</sub></div>
+        </div>
+        <div class="item">
+            <img src="DoG_y.png" style="width: 500%;" alt="DoG y">
+            <div class="caption">DoG<sub>y</sub></div>
+        </div>
+    </div>
+
+    <div class="observation-box">
+        <strong>Observations:</strong><br>
+        <p>Convolution with linear filters is commutative and associative, so convolving I and G, 
+            then convolving this with D<sub>x</sub> is the same as convolving I with G * D<sub>x</sub>.
+        Additionally, compared to the previous section, smoothing the image allows the result to have less 
+        white noise and the edges remain preserved.</p>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <h2>Part 2: Frequencies</h2>
+
+    <h3>Part 2.1: Image "Sharpening"</h3>
+    
+    <div class="single-image">
+        <img src="sharpening_taj.png" alt="Taj Mahal original" width="200%">
+        <div class="caption">Taj (Original, Blurred, High Frequency, and Sharpened)</div>
+    </div>
+
+    <p>Unsharp masking is a technique that starts off by blurring the original image using a low-pass filter 
+        (Gaussian in this case). This blurred image is subtracted from the original image to get the 
+        high-frequency components of the image, which correspond to the edges and fine details. Then, 
+        this high-frequency information is added back to the original image (by some scaling factor) which 
+        increases the edge contrast and makes them appear sharper and more defined. Below, the Taj Mahal is 
+        sharpened with varying scaling factors which impacts how pronounced the edges look. Let I denote a 
+        given grayscale 2D image, α denote the sharpening parameter, and G denote a gaussian filter.</p>
+
+    <div class="math-formula">
+        <strong>Unsharp Masking:</strong><br>
+        sharpened = I + α(I - I ⊗ G)<br>
+        <strong>unsharp_filter = (1 + α)δ - αG</strong>
+    </div>
+
+    <img src="prog_sharp_taj.png" alt="Different Sharpness of Taj">
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="taj.jpg" alt="Original Taj">
+            <div class="caption">Original Taj Mahal</div>
+        </div>
+        <div class="comparison-item">
+            <img src="sharp_taj.jpg" alt="Sharpened Taj">
+            <div class="caption">Sharpened Taj Mahal (α = 1.5)</div>
+        </div>
+    </div>
+
+    <div class="single-image">
+        <img src="sharp_wayfarer.png" width="75%">
+        <div class="caption">ZOOM IN TO SEE BETTER: Wayfarer Bakery in SD (Original, Blurred, High Frequency, and Sharpened)</div>
+    </div>
+
+    <h3>Part 2.2: Hybrid Images</h3>
+    
+    <p>Using the hybrid images approach from the SIGGRAPH 2006 paper, I made static images that change 
+        in interpretation as a function of the viewing distance. When viewing these images from a close 
+        distance, the high frequency portion of one image is visible and viewing it from afar shows the 
+        low frequency portion of the other image. </p>
+    <div class="algorithm-step">
+        <strong>Hybrid Image Creation Process:</strong><br>
+        1. Align two input images<br>
+        2. Apply low-pass filter (Gaussian) to one image: I₁_low = I₁ ⊗ G<sub>σ₁</sub><br>
+        3. Apply high-pass filter to the other image: I₂_high = I₂ - (I₂ ⊗ G<sub>σ₂</sub>)<br>
+        4. Combine: hybrid = I₁_low + I₂_high
+    </div>
+
+    <div>
+        <img class="single-image" src="fft.png">
+    </div>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="hybrid_emotions.jpg" alt="Scary x Smiley Man">
+            <div class="caption">Hybrid of Scary x Smiley Man (σ = 5)</div>
+        </div>
+        <div class="comparison-item">
+            <img src="hybrid.jpg" alt="Derek x Cat">
+            <div class="caption">Hybrid of Derek x Cat (σ = 5)</div>
+        </div>
+    </div>
+
+    <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+    
+    <p>I implemented Gaussian and Laplacian stacks (without downsampling) in preparation for multiresolution 
+        blending. Unlike pyramids, stacks maintain the original image dimensions at each level, by applying 
+        the Gaussian filter at each level without subsampling.</p>
+
+    <div class="single-image">
+        <img src="masks.png" alt="Masks">
+        <div class="caption">Figure 3.42</div>
+    </div>
+
+    <h3>Part 2.4: Multiresolution Blending</h3>
+    
+    <div class="single-image">
+        <img src="oraple.png" alt="Oraple">
+        <div class="caption">Output Oraple Blended</div>
+    </div>
+    <div class="single-image">
+        <img src="marsxvenus.png" alt="MarsxVenue">
+        <div class="caption">Mars x Venus Blended</div>
+    </div>
+    <div class="three-grid">
+        <div class="item">
+            <img src="earth.jpg.webp" alt="Earth">
+            <div class="caption">Earth</div>
+        </div>
+        <div class="item">
+            <img src="saturn.jpg.webp" alt="Saturn">
+            <div class="caption">Saturn</div>
+        </div>
+        <div class="item">
+            <img src="earthxsaturn.png" alt="Earth x Saturn">
+            <div class="caption">Smoothed circular mask blend (Earth x Saturn)</div>
+        </div>
+    </div>
+
+    <div class="algorithm-step">
+        <strong>Multiresolution Blending Algorithm:</strong><br>
+        1. Create Gaussian and Laplacian stacks for both input images A and B<br>
+        2. Create Gaussian stack for the blending mask M<br>
+        3. For each level k, blend: L<sub>blend</sub>[k] = G<sub>M</sub>[k] ⊙ L<sub>A</sub>[k] + (1 - G<sub>M</sub>[k]) ⊙ L<sub>B</sub>[k]<br>
+        4. Reconstruct final image: result = Σ L<sub>blend</sub>[k]
+    </div>
+
+    <div class="observation-box">
+        <strong>Multiresolution Blending:</strong><br>
+        Here, I created blended images of the orange and apple using a smoothed vertical mask along with 
+        Mars and Venus. For the irregular mask, I used a smoothed circular mask to blend together Earth 
+        and Saturn. In my opinion, the hardest part was finding the right center and radius for the mask 
+        to blend the images together since they weren't aligned completely to start off with. 
+    </div>
+</body>
+</html>
