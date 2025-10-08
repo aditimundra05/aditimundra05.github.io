@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Mosaics and Panorama Stitching</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background-color: #fff;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-top: 2em;
+            margin-bottom: 1em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        
+        p {
+            margin-bottom: 1em;
+            text-align: justify;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1.5em auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 2em 0;
+        }
+        
+        .image-grid-source {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 2em 0;
+        }
+        
+        .image-item {
+            text-align: center;
+        }
+        
+        .image-item img {
+            margin: 0 auto 10px;
+        }
+        
+        .caption {
+            font-size: 0.9em;
+            color: #586069;
+            font-style: italic;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 2em 0;
+        }
+        
+        .comparison-item {
+            text-align: center;
+        }
+        
+        .comparison-item img {
+            width: 100%;
+            height: auto;
+            margin: 0 auto 10px;
+        }
+        
+        .algorithm-step {
+            background-color: #e8f4f8;
+            border-left: 4px solid #0366d6;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .method-comparison {
+            background-color: #fff5b7;
+            border-left: 4px solid #ffb300;
+            padding: 1em;
+            margin: 2em 0;
+        }
+        
+        code {
+            background-color: rgba(27,31,35,0.05);
+            border-radius: 3px;
+            font-size: 85%;
+            margin: 0;
+            padding: 0.2em 0.4em;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+        
+        pre {
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85em;
+        }
+        
+        ul, ol {
+            padding-left: 2em;
+        }
+        
+        li {
+            margin-bottom: 0.5em;
+        }
+        
+        .section-divider {
+            border-top: 2px solid #e1e4e8;
+            margin: 3em 0 2em 0;
+        }
+        
+        .math-display {
+            text-align: center;
+            margin: 1.5em 0;
+            padding: 1em;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Mosaics and Panorama Stitching</h1>
+    
+    <p><strong>github.com/aditimundra05/cs180/4/index.html</strong></p>
+
+    <h2>Part A.1: Shoot the Pictures</h2>
+    
+    <p>In order to create panoramic mosaics, I took pictures of a building interior and landscape exterior. I fixed the center of projection and rotated my camera while capturing the photos, kept 40% of overlap between the images, and shot in a short time span.</p>
+    
+    <h3>Image Set 1: Outdoor Landscape Panorama</h3>
+    
+    <div class="image-grid">
+        <div class="image-item">
+            <img src="landscape1.jpg" alt="Set 1 Image 1">
+            <div class="caption">Landscape 1</div>
+        </div>
+        <div class="image-item">
+            <img src="landscape2.jpg" alt="Set 1 Image 2">
+            <div class="caption">Landscape 2</div>
+        </div>
+        <div class="image-item">
+            <img src="landscape3.jpg" alt="Set 1 Image 3">
+            <div class="caption">Landscape 3</div>
+        </div>
+        <div class="image-item">
+            <img src="landscape4.jpg" alt="Set 1 Image 4">
+            <div class="caption">Landscape 4</div>
+        </div>
+    </div>
+    
+    <h3>Image Set 2: Indoor Interior Panorama</h3>
+    
+    <div class="image-grid">
+        <div class="image-item">
+            <img src="inside1.jpg" alt="Set 2 Image 1">
+            <div class="caption">Inside 1</div>
+        </div>
+        <div class="image-item">
+            <img src="inside2.jpg" alt="Set 2 Image 2">
+            <div class="caption">Inside 2</div>
+        </div>
+        <div class="image-item">
+            <img src="inside3.jpg" alt="Set 2 Image 3">
+            <div class="caption">Inside 3</div>
+        </div>
+        <div class="image-item">
+            <img src="inside4.jpg" alt="Set 2 Image 4">
+            <div class="caption">Inside 4</div>
+        </div>
+    </div>
+
+    <h2>Part A.2: Recover Homographies</h2>
+    
+    <p>A homography is a projective transformation that maps points from one image plane to another. Mathematically, it relates corresponding points \( \mathbf{p} \) and \( \mathbf{p}' \) between two images as:</p>
+    
+    <div class="math-display">
+        \( \mathbf{p}' = H\mathbf{p} \)
+    </div>
+    
+    <p>where \( H \) is a 3×3 matrix with 8 degrees of freedom (the lower-right element is set to 1 for normalization).</p>
+    
+    <h3>Procedure</h3>
+    
+    <p>First, I used the tool given to find point correspondences between the two images. Given corresponding points in homogeneous coordinates:</p>
+    
+    <div class="math-display">
+        \( \mathbf{p} = \begin{bmatrix}x\\y\\1\end{bmatrix} \quad \mathbf{p}' = \begin{bmatrix}x'\\y'\\1\end{bmatrix} \)
+    </div>
+    
+    <p>and the homography matrix:</p>
+    
+    <div class="math-display">
+        \( H = \begin{bmatrix}h_1&h_2&h_3\\ h_4&h_5&h_6 \\h_7&h_8&1\end{bmatrix} \)
+    </div>
+    
+    <p>The transformation yields:</p>
+    
+    <div class="math-display">
+        \( H\mathbf{p} = \begin{bmatrix}
+        xh_1+yh_2+h_3\\
+        xh_4+yh_5+h_6\\
+        xh_7+yh_8+1
+        \end{bmatrix} \)
+    </div>
+    
+    <p>Then, I normalized using the z component to come back to the original (x, y) plane, and obtained:</p>
+    
+    <div class="math-display">
+        \( \begin{cases}
+        \frac{xh_1+yh_2+h_3}{xh_7+yh_8+1} = x'\\
+        \\
+        \frac{xh_4+yh_5+h_6}{xh_7+yh_8+1} = y'
+        \end{cases} \)
+    </div>
+    
+    <p>As per discussion, I learned that we can rearrange these equations to get two linear constraints per point correspondence:</p>
+    
+    <div class="math-display">
+        \( \begin{bmatrix}
+        x & y & 1 & 0 & 0 & 0 & -x'x & -x'y\\
+        0 & 0 & 0 & x & y & 1 & -y'x & -y'y
+        \end{bmatrix}
+        \begin{bmatrix}h_1\\h_2\\h_3\\h_4\\h_5\\h_6\\h_7\\h_8\end{bmatrix} = \begin{bmatrix}x'\\ y'\end{bmatrix} \)
+    </div>
+    
+    <p>For \( n \) point correspondences, we construct an overdetermined system \( A\mathbf{h} = \mathbf{b} \) where \( A \) is a \( 2n \times 8 \) matrix, and solve using least squares: \( \mathbf{h} = (A^TA)^{-1}A^T\mathbf{b} \).</p>
+    
+    <h3>Point Correspondences</h3>
+    
+    <p>Here are my point correspondences for the first pair of interior images and exterior images.</p>
+    
+    <img src="inside_pts.png" alt="Point Correspondences">
+    <img src="outside_pts.png" alt="Point Correspondences">
+    <div class="caption">Visualized point correspondences between two images</div>
+    
+    <h3>Recovered Homography Matrix</h3>
+    
+    <p>Using the point correspondences shown above, the computed homography matrix is:</p>
+    
+    <pre>
+H_interior = [[ 1.51771976e+00 -1.13667471e-04 -1.59786792e+03]
+ [ 1.89873898e-01  1.28438160e+00 -4.61985366e+02]
+ [ 1.27445928e-04 -2.76085941e-06  1.00000000e+00]]
+    </pre>
+    <pre>
+H_landscape = [[ 1.33437925e+00 -4.47218776e-02 -1.07262312e+03]
+ [ 1.40441962e-01  1.13252177e+00 -2.39534564e+02]
+ [ 9.44219893e-05 -2.51788604e-05  1.00000000e+00]]
+    </pre>
+
+    <h2>Part A.3: Warp the Images</h2>
+    
+    <p>Once the homography is recovered, we can warp images to align them. I implemented two interpolation methods using inverse warping to avoid holes in the output:</p>
+    
+    <h3>Inverse Warping</h3>
+    
+    <p>Rather than mapping source pixels to destination (forward warping), which can leave holes since pixels can hit some of the same points during their transformation 
+        while leaving others untouched (essentially no pixels map to that place), I used inverse warping. For each pixel in the output image, I computed its corresponding 
+        location in the source image using \( H^{-1} \) and interpolated the color value. First, I found the location of the destination image by applying H to the corners 
+        of my source image. From this bounding box, I went coordinate by coordinate and applied H_inverse to find the source location. Here, I applied the respective interpolation methods detailed below.</p>
+    
+    <h3>Interpolation Methods</h3>
+    
+    <div class="algorithm-step">
+        <strong>1. Nearest Neighbor Interpolation</strong>
+        <p>In this method, I rounded the computed coordinates to the nearest integer pixel location and used that pixel's value directly.</p>
+        <ul>
+            <p><strong>Comparison: </strong>This method was faster (less time to compute) since very little algebra was involved and there was no blurring in my results. However, though it's not visible in my images, it can produce block-like results since there's no gradual transition or incorporation of other pixel values.</p>
+        </ul>
+    </div>
+    
+    <div class="algorithm-step">
+        <strong>2. Bilinear Interpolation</strong>
+        <p>This method computes a weighted average of the four nearest pixels based on their distance from the query point.</p>
+        <ul>
+            <p><strong>Comparison: </strong> This method had smoother results since other pixel values were incorporated which resulted in better visual quality of my images. However, it took much longer since there are more computations involved and there was slight blurring.</p>
+        </ul>
+    </div>
+    
+    <h3>Quality Comparison</h3>
+    
+    <div class="comparison-container">
+        <div class="comparison-item">
+            <img src="warpNN.png" alt="Nearest Neighbor">
+            <div class="caption">Nearest Neighbor Interpolation</div>
+        </div>
+        <div class="comparison-item">
+            <img src="warping.png" alt="Bilinear">
+            <div class="caption">Bilinear Interpolation</div>
+        </div>
+    </div>
+    
+    <p>As shown in the comparison above, bilinear interpolation produces smoother results, particularly in areas with fine details and edges. The nearest neighbor method preserves sharp edges better.</p>
+    
+    <h3>Rectification</h3>
+    
+    <p>To verify my homography and warping functions were working correctly, I performed rectification on images with rectangular objects (an iPad and a piece of paper). I manually defined correspondences between the rectangles and a standard square, so the homography transformed the distorted objects back to their rectangular shapes.</p>
+    
+    <img src="rectification.png">
+
+    <h2>Part A.4: Blend the Images into a Mosaic</h2>
+    
+    <p>Here, I blended the images into a mosaic by warping the images one on top of the other and extending the dimensions accordingly. Also, I added simple feathering at every channel using the alpha channel by setting it to 1 at the center of each image and making it fall off until 0 at the edges.</p>
+    
+    <h3>Blending Procedure</h3>
+    
+    <ol>
+        <li>Compute the homography from image 2 to image 1 (src -> dest).</li>
+        <li>Warp image 2 (and beyond) into image 1 using warpImageBilinear() and include the alpha channel as detailed above (light feathering).</li>
+        <li>Adjust the bounding box / dimensions / offsets to account for the new image size (find the new min/max x/y values, adjust the offset, expand the height and width of the image).</li>
+        <li>Blend the images together using the alpha channel values (at each pixel, compute the final color as a weighted average of all contributing images using their alpha masks as weights).</li>
+    </ol>
+    
+    <h3>Mosaic Results</h3>
+    
+    <div class="method-comparison">
+        <strong>Mosaic 1:</strong> Lecture Hall Interior
+    </div>
+    
+    <div class="image-grid-source">
+        <div class="image-item">
+            <img src="lecture1.jpg" alt="Lecture 1">
+            <div class="caption">Lecture Hall Image 1</div>
+        </div>
+        <div class="image-item">
+            <img src="lecture2.jpg" alt="Lecture 2">
+            <div class="caption">Lecture Hall Image 2</div>
+        </div>
+    </div>
+    <img src="lecture_pano.png" alt="Pano">
+    <div class="caption">Panoramo of Lecture Hall (Note: There is some distortion of the men since they were walking during the picture. However, from the text shown on the screen, the warping was accurately done. The men moving adds a time dimension to my image.)</div>
+    
+    <div class="method-comparison">
+        <strong>Mosaic 2:</strong> Landscape Panorama
+    </div>
+
+    <div class="image-grid-source">
+        <div class="image-item">
+            <img src="library1.jpg" alt="Library 1">
+            <div class="caption">Library Image 1</div>
+        </div>
+        <div class="image-item">
+            <img src="library2.jpg" alt="Library 2">
+            <div class="caption">Library Image 2</div>
+        </div>
+    </div>
+    <img src="arch_pano.png" alt="Source 4">
+    <div class="caption">Library Panorama</div>
+    
+    <div class="method-comparison">
+        <strong>Mosaic 3:</strong> Haas Arch Panorama
+    </div>
+    
+    <div class="image-grid-source">
+        <div class="image-item">
+            <img src="haas1.jpg" alt="Haas 1">
+            <div class="caption">Haas Image 1</div>
+        </div>
+        <div class="image-item">
+            <img src="haas2.jpg" alt="Haas 2">
+            <div class="caption">Haas Image 2</div>
+        </div>
+    </div>
+    
+    <img src="haas_pano.png" alt="Source 3">
+    <div class="caption">Haas Arch Panoramo</div>
+</body>
+</html>
