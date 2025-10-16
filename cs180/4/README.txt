@@ -1,1 +1,0 @@
-Running main.ipynb will go step by step and show the resulting images.

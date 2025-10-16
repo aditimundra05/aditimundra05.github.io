@@ -164,47 +164,44 @@
 
     <h2>Part A.1: Shoot the Pictures</h2>
     
-    <p>In order to create panoramic mosaics, I took pictures of a building interior and landscape exterior. I fixed the center of projection and rotated my camera while capturing the photos, kept 40% of overlap between the images, and shot in a short time span.</p>
+    <p>In order to create panoramic mosaics, I took pictures of the Haas Faculty building, the rooftop of my apartment, and outside the library. I fixed the center of projection and rotated my camera while capturing the photos, kept 40% of overlap between the images, and shot in a short time span.</p>
     
-    <h3>Image Set 1: Outdoor Landscape Panorama</h3>
+    <h3>Image Set 1: Haas Faculty Arch</h3>
     
     <div class="image-grid">
         <div class="image-item">
-            <img src="landscape1.jpg" alt="Set 1 Image 1">
-            <div class="caption">Landscape 1</div>
+            <img src="haas1.jpg" alt="Set 1 Image 1">
+            <div class="caption">Haas 1</div>
         </div>
         <div class="image-item">
-            <img src="landscape2.jpg" alt="Set 1 Image 2">
-            <div class="caption">Landscape 2</div>
-        </div>
-        <div class="image-item">
-            <img src="landscape3.jpg" alt="Set 1 Image 3">
-            <div class="caption">Landscape 3</div>
-        </div>
-        <div class="image-item">
-            <img src="landscape4.jpg" alt="Set 1 Image 4">
-            <div class="caption">Landscape 4</div>
+            <img src="haas2.jpg" alt="Set 1 Image 2">
+            <div class="caption">Haas 2</div>
         </div>
     </div>
     
-    <h3>Image Set 2: Indoor Interior Panorama</h3>
+    <h3>Image Set 2: Berkeley Landscape</h3>
     
     <div class="image-grid">
         <div class="image-item">
-            <img src="inside1.jpg" alt="Set 2 Image 1">
-            <div class="caption">Inside 1</div>
+            <img src="landscape1.jpg" alt="Set 2 Image 1">
+            <div class="caption">Landscape 1</div>
         </div>
         <div class="image-item">
-            <img src="inside2.jpg" alt="Set 2 Image 2">
-            <div class="caption">Inside 2</div>
+            <img src="landscape3.jpg" alt="Set 2 Image 2">
+            <div class="caption">Landscape 2</div>
+        </div>
+    </div>
+
+    <h3>Image Set 3: Library Trees</h3>
+    
+    <div class="image-grid">
+        <div class="image-item">
+            <img src="library1.jpg" alt="Set 3 Image 1">
+            <div class="caption">Library 1</div>
         </div>
         <div class="image-item">
-            <img src="inside3.jpg" alt="Set 2 Image 3">
-            <div class="caption">Inside 3</div>
-        </div>
-        <div class="image-item">
-            <img src="inside4.jpg" alt="Set 2 Image 4">
-            <div class="caption">Inside 4</div>
+            <img src="library2.jpg" alt="Set 3 Image 2">
+            <div class="caption">Library 2</div>
         </div>
     </div>
 
@@ -266,9 +263,9 @@
     
     <h3>Point Correspondences</h3>
     
-    <p>Here are my point correspondences for the first pair of interior images and exterior images.</p>
+    <p>Here are my point correspondences for the images.</p>
     
-    <img src="inside_pts.png" alt="Point Correspondences">
+    <img src="haaspoints.png" alt="Point Correspondences">
     <img src="outside_pts.png" alt="Point Correspondences">
     <div class="caption">Visualized point correspondences between two images</div>
     
@@ -277,9 +274,9 @@
     <p>Using the point correspondences shown above, the computed homography matrix is:</p>
     
     <pre>
-H_interior = [[ 1.51771976e+00 -1.13667471e-04 -1.59786792e+03]
- [ 1.89873898e-01  1.28438160e+00 -4.61985366e+02]
- [ 1.27445928e-04 -2.76085941e-06  1.00000000e+00]]
+H_haas = [[ 1.30315558e+00  2.16205768e-03 -9.27599325e+02]
+ [ 1.15292498e-01  1.17892236e+00 -2.81916782e+02]
+ [ 7.32444026e-05  3.82886816e-06  1.00000000e+00]]
     </pre>
     <pre>
 H_landscape = [[ 1.33437925e+00 -4.47218776e-02 -1.07262312e+03]
@@ -353,21 +350,21 @@ H_landscape = [[ 1.33437925e+00 -4.47218776e-02 -1.07262312e+03]
     <h3>Mosaic Results</h3>
     
     <div class="method-comparison">
-        <strong>Mosaic 1:</strong> Lecture Hall Interior
+        <strong>Mosaic 1:</strong> Landscape Rooftop
     </div>
     
     <div class="image-grid-source">
         <div class="image-item">
-            <img src="lecture1.jpg" alt="Lecture 1">
-            <div class="caption">Lecture Hall Image 1</div>
+            <img src="landscape1.jpg" alt="Lecture 1">
+            <div class="caption">Landscape Image 1</div>
         </div>
         <div class="image-item">
-            <img src="lecture2.jpg" alt="Lecture 2">
-            <div class="caption">Lecture Hall Image 2</div>
+            <img src="landscape2.jpg" alt="Lecture 2">
+            <div class="caption">Landscape Image 2</div>
         </div>
     </div>
-    <img src="lecture_pano.png" alt="Pano">
-    <div class="caption">Panoramo of Lecture Hall (Note: There is some distortion of the men since they were walking during the picture. However, from the text shown on the screen, the warping was accurately done. The men moving adds a time dimension to my image.)</div>
+    <img src="landscape_pano.png" alt="Pano">
+    <div class="caption">Panoramo of Rooftop</div>
     
     <div class="method-comparison">
         <strong>Mosaic 2:</strong> Landscape Panorama
@@ -403,5 +400,220 @@ H_landscape = [[ 1.33437925e+00 -4.47218776e-02 -1.07262312e+03]
     
     <img src="haas_pano.png" alt="Source 3">
     <div class="caption">Haas Arch Panoramo</div>
+
+    <div class="method-comparison">
+        <strong>Mosaic 4:</strong> Lecture Hall Interior
+    </div>
+    
+    <div class="image-grid-source">
+        <div class="image-item">
+            <img src="lecture1.jpg" alt="Lecture 1">
+            <div class="caption">Lecture Hall Image 1</div>
+        </div>
+        <div class="image-item">
+            <img src="lecture2.jpg" alt="Lecture 2">
+            <div class="caption">Lecture Hall Image 2</div>
+        </div>
+    </div>
+    <img src="lecture_pano.png" alt="Pano">
+    <div class="caption">Panoramo of Lecture Hall (Note: There is some distortion of the men since they were walking during the picture. However, from the text shown on the screen, the warping was accurately done. The men moving adds a time dimension to my image.)</div>
+
+    <div class="section-divider"></div>
+
+    <h2>Part B: Feature Matching for Autostitching</h2>
+    
+    <h3>Introduction</h3>
+    
+    <p>In Part A, I manually selected point correspondences between images to compute homographies. This process is effective, but quite tedious, time-consuming, and prone to human error. Now, I automated the entire pipeline to detect, describe, and match features between images automatically.</p>
+
+    <h2>Part B.1: Harris Corner Detection</h2>
+    
+    <p>First, I need to identify the corners in the images. I implemented the Harris Corner Detector to find points that are likely to be good candidates for matching.</p>
+    
+    <h3>Harris Corner Detector Algorithm</h3>
+    
+    <p>Given an image \( I(x,y) \) and window size \( w \), the Harris corner detection algorithm works as follows:</p>
+    
+    <ol>
+        <li>Apply Gaussian blur with \( \sigma_b \), then compute the image derivatives with respect to \( x \) and \( y \), obtaining \( I_x \) and \( I_y \).</li>
+        <li>Compute the products of derivatives: \( I_{xx} = I_x^2 \), \( I_{yy} = I_y^2 \), \( I_{xy} = I_xI_y \).</li>
+        <li>For each point \( (u,v) \), define a sliding window \( \mathcal{W} = [u - w/2:u+ w/2, v - w/2:v+w/2] \).</li>
+        <li>Compute the sums: \( S_{xx} = \sum_{(x,y)\in \mathcal{W}}I_{xx} \), \( S_{yy} = \sum_{(x,y)\in \mathcal{W}}I_{yy} \), \( S_{xy} = \sum_{(x,y)\in \mathcal{W}}I_{xy} \).</li>
+        <li>Calculate the Harris response: \( h = \frac{S_{xx}S_{yy} - S_{xy}^2}{S_{xx}+S_{yy}} \). This is essentially the determinant over the trace.</li>
+        <li>Select points where the Harris response exceeds a threshold.</li>
+    </ol>
+    
+    <p>I discarded points within 20 pixels of the image edges to avoid boundary effects as the research paper stated.</p>
+    
+    <img src="harriscorners.png" alt="Harris Corners">
+    <div class="caption">Harris corners detected on the image</div>
+    <p>Important Note: I added a threshold_rel parameter to the peak_local_max function since running the function without this resulted in over 100,000 points being detected on the image. This led to my kernel crashing in subsequent steps.</p>
+
+    <h3>Adaptive Non-Maximal Suppression (ANMS)</h3>
+    
+    <p>To obtain a more evenly distributed set of interest points, I implemented Adaptive Non-Maximal Suppression (ANMS).</p>
+    
+    <div class="algorithm-step">
+        <strong>ANMS Algorithm</strong>
+        <ol>
+            <li>Given Harris corner coordinates <code>coords</code> (N×2) and response values <code>h</code> (N×1), sort corners in descending order by Harris response strength.</li>
+            <li>For each corner, compute its suppression radius: the minimum distance to a corner with a significantly stronger Harris response (based on the equation f(x) < c * f(y)).</li>
+            <li>Select the top <code>n</code> corners with the largest suppression radii.</li>
+        </ol>
+        <p>This ensures that selected corners are locally maximal over a large area, promoting even distribution across the image.</p>
+    </div>
+    
+    <div class="comparison-item">
+        <img src="anms.png" alt="After ANMS">
+        <div class="caption">After ANMS</div>
+    </div>
+
+    <h2>Part B.2: Feature Descriptor Extraction</h2>
+    
+    <p>After identifying interest points, I created descriptors that characterize the local appearance around each point. These descriptors allow us to match corresponding points between different images.</p>
+    
+    <h3>Feature Descriptor Pipeline</h3>
+    
+    <ol>
+        <li>Extract a 40×40 pixel patch centered at each interest point.</li>
+        <li>Apply a Gaussian low-pass filter to reduce noise and aliasing.</li>
+        <li>Downsample the patch to 8×8 pixels (using a spacing of s=5 pixels).</li>
+        <li>Flatten the 8×8 patch into a 64-dimensional feature vector.</li>
+        <li>Normalize the descriptor by subtracting its mean and dividing by its standard deviation (bias-gain normalization).</li>
+    </ol>
+    
+    <div class="algorithm-step">
+        <p><strong>Why 40×40 → 8×8?</strong></p>
+        <p>The larger 40×40 window captures more context around the interest point. By blurring and downsampling to 8×8, I create a descriptor that is more robust to small variations in position and lighting.</p>
+    </div>
+    
+    <div class="comparison-item">
+        <img src="descriptors2.png" alt="First descriptor">
+        <div class="caption">First Image Descriptors</div>
+        <img src="descriptors.png" alt="Second descriptors">
+        <div class="caption">Second Image Descriptors</div>
+    </div>    
+    <p>Above: Sample 8x8 patches extracted from interest points</p>
+
+    <h2>Part B.3: Feature Matching</h2>
+    
+    <p>With feature descriptors computed for both images, I can find correspondences by finding pairs of descriptors that are similar. I implemented a feature matching algorithm that uses the Sum of Squared Differences (SSD) distance metric combined with Lowe's ratio test to identify reliable correspondences.</p>
+    
+    <h3>Feature Matching Algorithm</h3>
+    <ol>
+        <li><strong>Compute Pairwise Distances:</strong> Calculate the SSD between all descriptor pairs from image 1 and image 2, resulting in an \( n_1 \times n_2 \) distance matrix. I did this using the dist2 function provided by course staff.</li>
+        <li><strong>For each descriptor in image 1:</strong>
+            <ul>
+                <li>Sort all descriptors in image 2 by their distance to this descriptor.</li>
+                <li>Identify the nearest neighbor (NN1) and second-nearest neighbor (NN2).</li>
+                <li>Retrieve their distances: \( d_1 \) and \( d_2 \).</li>
+            </ul>
+        </li>
+        <li><strong>Apply Lowe's Ratio Test:</strong> Accept the match only if:
+            \[ \sqrt{\frac{d_1}{d_2}} < \text{threshold} \]
+            where the threshold is set to 0.7. This ensures that the best match is significantly better than the second-best match.
+        </li>
+    </ol>
+    
+    <div class="algorithm-step">
+        <strong>Lowe's Ratio Test</strong>
+        <p>The ratio test filters out ambiguous matches. If the nearest neighbor is only slightly closer than the second-nearest neighbor, the match is unreliable. By requiring a significant distance ratio (typically < 0.7), it keeps only high-confidence matches.</p>
+    </div>
+    
+    <img src="featurematching.png" alt="Feature Matches">
+    <div class="caption">Matched features between two images (different colored lines connect corresponding points)</div>
+    
+    <p>After feature matching with threshold 0.7, I obtained approximately 20 matches per image pair.</p>
+
+    <h2>Part B.4: RANSAC for Robust Homography Estimation</h2>
+    
+    <p>Even with careful matching, some outliers (incorrect matches) still exist. RANSAC (Random Sample Consensus) can compute an accurate homography despite the presence of outliers.</p>
+    
+    <h3>4-Point RANSAC Algorithm</h3>
+    
+    <div class="algorithm-step">
+        <ol>
+            <li><strong>Input:</strong> Set of matches, number of iterations <code>n_iterations</code>, inlier threshold <code>ε</code>.</li>
+            <li><strong>Initialize:</strong> <code>best_H = None</code>, <code>max_inliers = 0</code>.</li>
+            <li><strong>Repeat</strong> for <code>n_iterations</code>:
+                <ul>
+                    <li>Randomly select 4 point correspondences.</li>
+                    <li>Compute homography \( H \) from these 4 points (exactly determined system).</li>
+                    <li>Transform all points from image 1 using \( H \).</li>
+                    <li>Compute the Euclidean distance between transformed points and their matches in image 2.</li>
+                    <li>Count inliers: points with distance < <code>ε</code> ( ε = 3 pixels).</li>
+                    <li>If the number of inliers exceeds <code>max_inliers</code>, update <code>best_H</code> and <code>max_inliers</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Refinement:</strong> Recompute \( H \) using all inliers from the best model (least squares).</li>
+            <li><strong>Output:</strong> Final homography <code>best_H</code>.</li>
+        </ol>
+    </div>
+    
+    <p>I used 1000 RANSAC iterations with an inlier threshold of 3 pixels.</p>
+
+    <h3>Automatic Panorama Stitching Results</h3>
+    
+    <p>Here are comparisons between manually stitched (Part A) and automatically stitched (Part B) panoramas.</p>
+    
+    <div class="method-comparison">
+        <strong>Mosaic 1: Library</strong>
+    </div>
+    
+    <div class="comparison-container">
+        <div class="comparison-item">
+            <img src="arch_pano.png" alt="Manual Stitching">
+            <div class="caption">Manual stitching (Part A)</div>
+        </div>
+        <div class="comparison-item">
+            <img src="mosaic1.png" alt="Automatic Stitching">
+            <div class="caption">Automatic stitching (Part B)</div>
+        </div>
+    </div>
+    
+    <div class="method-comparison">
+        <strong>Mosaic 2: Haas Building</strong>
+    </div>
+    
+    <div class="comparison-container">
+        <div class="comparison-item">
+            <img src="haas_pano.png" alt="Manual Stitching">
+            <div class="caption">Manual stitching (Part A)</div>
+        </div>
+        <div class="comparison-item">
+            <img src="mosaic2.png" alt="Automatic Stitching">
+            <div class="caption">Automatic stitching (Part B)</div>
+        </div>
+    </div>
+    
+    <div class="method-comparison">
+        <strong>Mosaic 3: Outside Landscape</strong>
+    </div>
+    
+    <div class="comparison-container">
+        <div class="comparison-item">
+            <img src="landscape_pano.png" alt="Manual Stitching">
+            <div class="caption">Manual stitching (Part A)</div>
+        </div>
+        <div class="comparison-item">
+            <img src="mosaic3.png" alt="Automatic Stitching">
+            <div class="caption">Automatic stitching (Part B)</div>
+        </div>
+    </div>
+    
+    <h3>Analysis and Comparison</h3>
+    
+    <p>The automatic stitching pipeline produces results that are comparable to, and in my opinion for mosaics 1 and 3 better than, manual stitching:</p>
+    
+    <ul>
+        <li><strong>Accuracy:</strong> Automatic feature matching identifies correspondences with sub-pixel accuracy, while manual clicking is limited by human precision (most of my correspondences were off by a couple of pixels since I roughly eye-balled them).</li>
+        <li><strong>Robustness:</strong> RANSAC effectively filters out outliers, making the homography estimation more robust to incorrect matches.</li>
+        <li><strong>Efficiency:</strong> The automatic pipeline processes image pairs in a couple of minutes, compared to the time it takes to manually find correspondences per pair of images.</li>
+        <li><strong>Consistency:</strong> Automated methods produce reproducible results, while manual selection introduces variability.</li>
+    </ul>
+    
+    <p>However, automatic methods can struggle in scenarios with repetitive patterns or light changes.</p>
+
+    <div class="section-divider"></div>
 </body>
 </html>
