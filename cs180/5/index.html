@@ -269,7 +269,7 @@
 </head>
 <body>
     <h1>Neural Radiance Fields</h1>
-        <p><strong>github.com/aditimundra05/cs180/5/index.html</strong></p>
+        <p><strong>https://aditimundra05.github.io/cs180/5/index.html</strong></p>
 
     <h2>Part 0: Camera Calibration and 3D Data Capture</h2>
 
@@ -587,16 +587,16 @@
     <div class="observation-box">
         <h4>Implementation Modifications:</h4>
         <ul>
-            <li><strong>Near/Far Bounds:</strong> Adjusted based on object scale and camera distance (near=0.011, far=0.436)</li>
-            <li><strong>Learning Rate:</strong> Modified to 1e-3 for better convergence with real images</li>
-            <li><strong>Model Architecture:</strong> I changed the model architecture by adding bias to the density head. In addition, I kept the sofmax activation on the density head instead of ReLU because my alpha values were still too low.</li>
-            <li><strong>Iterations:</strong> I ran for 3000 iterations to see the model performance for longer.</li>
+            <li><strong>Near/Far Bounds:</strong> I adjusted based on the object scale and camera distance (near=0.011, far=0.436)</li>
+            <li><strong>Learning Rate:</strong> I changed it to 1e-3 because my PSNR was plateuing after a couple hundred iterations and entering a local maximum. This helped with better exploration and convergence. I also added a scheduler to decay the learning rate over time which helped with convergence as well.</li>
+            <li><strong>Model Architecture:</strong> I changed the model architecture by adding bias to the density head. In addition, I kept the sofmax activation on the density head instead of ReLU because my alpha values were too low. </li>
+            <li><strong>Iterations:</strong> I ran for 10000 iterations to see the model performance for longer.</li>
         </ul>
     </div>
 
     <h3>Training Progress</h3>
     <img src="purse_training.png">
-    <p class="single-image caption">I achieved a PSNR of 19.01 dB after 3000 iterations on my training data.</p>
+    <p class="single-image caption">I achieved a PSNR of 19.70 dB after 10000 iterations on my training data.</p>
 
     <h3>Novel View Synthesis Results</h3>
     <div id="myVideo" class="video-container">
