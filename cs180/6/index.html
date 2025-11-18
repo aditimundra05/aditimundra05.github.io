@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 5: Diffusion Models</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 60px 80px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 1.05em;
+        }
+
+        .abstract {
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 4px solid #3498db;
+            font-style: italic;
+        }
+
+        .image-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .image-grid-item {
+            text-align: center;
+        }
+
+        .image-grid-item img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        figcaption {
+            margin-top: 10px;
+            font-size: 0.95em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .equation {
+            text-align: center;
+            margin: 25px 0;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1em;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .note {
+            background-color: #fff8dc;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #ffa500;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .author {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .affiliation {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Power of Diffusion Models</h1>
+        <div class="subtitle">CS 180 Project 5A: Diffusion Models and Image Generation</div>
+
+        <h2>Part 0: Setup and Model Testing</h2>
+        <p>
+            In this section, I played around with the pretrained DeepFloyd IF model, a text-to-image model. The DeepFloyd IF architecture consists of two stages: the first stage generates 64×64 images, while the second stage upsamples these to 256×256 resolution.
+        </p>
+
+        <p>
+            To test the model, I generated images from three different text prompts: "a monet-style portrait of a vase", "a studio ghibli photo of a couple", and "a comic-book style photo of spiderman". For reproducibility, I set the random seed to 100. I experimented with different <code>num_inference_steps</code> parameters to understand how the number of denoising iterations affects the final image quality.
+        </p>
+
+        <h3>Results with Different num_inference_steps</h3>
+        <p>
+            The following images demonstrate the effect of varying the number of inference steps during the sampling process. Fewer steps result in faster generation but may sacrifice some image quality, while more steps generally produce cleaner, more coherent results. The comic-book style photo of spiderman had the best quality output that aligned with the text prompt. The background matches the toon style due to its simplified design and flat colors, and spiderman is popping out of the page. The Studio Ghibli photo of a couple had good quality as well, but it did not fully align with the prompt. A couple is shown since a guy and girl are in frame, but the girl slightly matches Studio Ghibli characteristics (more anime looking) while the man looks like he’s from Family Guy. Finally, the monet-style portrait of a vase had good quality, showed a portrait frame, and a vase inside of it but did not figure out Monet-style to mean impressionism. The color and light is not at the forefront of the image, so the style part of the text prompt is missing. Overall, the images were good quality and portrayed the items requested but not necessarily in the appropriate styles.
+        </p>
+
+        <div class="image-grid">
+            <div class="image-grid-item">
+                <img src="images/image49.png" alt="Setup result 1">
+                <figcaption>num_inference_steps = 20</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image44.png" alt="Setup result 2">
+                <figcaption>num_inference_steps = 20</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image2.png" alt="Setup result 3">
+                <figcaption>num_inference_steps = 20</figcaption>
+            </div>
+        </div>
+
+        <div class="image-grid">
+            <div class="image-grid-item">
+                <img src="images/image29.png" alt="Setup result 4">
+                <figcaption>num_inference_steps = 100</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image19.png" alt="Setup result 5">
+                <figcaption>num_inference_steps = 100</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image20.png" alt="Setup result 6">
+                <figcaption>num_inference_steps = 100</figcaption>
+            </div>
+        </div>
+
+        <h2>Part 1: Sampling Loops and Applications</h2>
+        
+        <h3>1.1 Implementing the Forward Process</h3>
+        <p>
+            Starting from a clean image x<sub>0</sub>, I progressively add Gaussian noise according to a predefined schedule. The forward process can be expressed mathematically as:
+        </p>
+
+        <div class="equation">
+            x<sub>t</sub> = √(ᾱ<sub>t</sub>) x<sub>0</sub> + √(1 - ᾱ<sub>t</sub>) ε
+        </div>
+
+        <p>
+            where ᾱ<sub>t</sub> represents the cumulative product of noise schedule parameters, and ε ~ N(0, I) is Gaussian noise. The noise coefficients ᾱ<sub>t</sub> are precomputed and stored in the model's scheduler.
+        </p>
+
+        <p>
+            I implemented this forward process and applied it to a test image of the Berkeley Campanile at timesteps t ∈ {250, 500, 750}. As expected, the image becomes progressively noisier as t increases, with the highest noise level (t=750) producing an image that appears almost entirely random.
+        </p>
+
+        <div class="image-container">
+            <img src="images/image5.png" alt="Forward process results">
+            <figcaption>Figure 1.1: Forward diffusion process applied to the Campanile at timesteps 250, 500, and 750</figcaption>
+        </div>
+
+        <h3>1.2 Classical Denoising</h3>
+        <p>
+            Before exploring learned denoising with diffusion models, I first attempted classical denoising using Gaussian blur filtering. This serves as a baseline to demonstrate the limitations of traditional signal processing approaches when dealing with heavy noise corruption.
+        </p>
+
+        <p>
+            I applied Gaussian blur with a kernel size of 11 to the noisy images from Part 1.1. While this approach can reduce high-frequency noise components, it fails to recover meaningful image structure, especially at higher noise levels. 
+        </p>
+
+        <div class="image-container">
+            <img src="images/image18.png" alt="Classical denoising result">
+            <figcaption>Gaussian blur denoising result</figcaption>
+        </div>
+
+        <h3>1.3 One-Step Denoising</h3>
+        <p>
+            The pretrained UNet in the DeepFloyd model has been trained to predict the noise component ε in a noisy image. Given a noisy image x<sub>t</sub> and timestep t, I can estimate the clean image in a single step using:
+        </p>
+
+        <div class="equation">
+            x<sub>0</sub> = (x<sub>t</sub> - √(1 - ᾱ<sub>t</sub>) ε) / √(ᾱ<sub>t</sub>)
+        </div>
+
+        <p>
+            where ε is the noise predicted by the UNet. This one-step denoising approach provides a direct estimate of the original clean image. However, as we observe in the results, the quality degrades significantly at higher noise levels. At t=750, the model struggles to recover fine details, producing an incredibly blurry approximation of the Campanile. This motivates the need for iterative refinement.
+        </p>
+
+        <div class="image-container">
+            <img src="images/image25.png" alt="One-step denoising results">
+            <figcaption>Figure 1.3: One-step denoising results at different noise levels</figcaption>
+        </div>
+
+        <h3>1.4 Iterative Denoising</h3>
+        <p>
+            Diffusion models are designed to denoise images iteratively, gradually removing noise over multiple steps. Rather than attempting to recover the clean image in one large jump, I took small steps from x<sub>t</sub> to x<sub>t'</sub> where t' &lt; t. This iterative approach allows the model to progressively refine its predictions, leading to much higher quality results.
+        </p>
+
+        <p>
+            For efficiency, I used a strided timestep schedule rather than processing all 1000 timesteps. Starting from t=990 and taking steps of size 30, I iteratively denoised until reaching t=0. At each step, I applied the denoising update rule that combines the predicted noise with a small amount of random variation.
+        </p>
+
+        <p>
+            Starting from a noisy image at timestep 690 (corresponding to <code>i_start=10</code> in our strided schedule), I visualized the denoising progression at every 5th iteration. The results show gradual image structure, with early iterations establishing coarse features and later iterations refining fine details.
+        </p>
+
+        <div class="image-grid">
+            <div class="image-grid-item">
+                <img src="images/image33.png" alt="Iterative step 1">
+                <figcaption>Iteration 0 (t=690)</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image43.png" alt="Iterative step 2">
+                <figcaption>Iteration 5 (t=540)</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image15.png" alt="Iterative step 3">
+                <figcaption>Iteration 10 (t=390)</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image11.png" alt="Iterative step 4">
+                <figcaption>Iteration 15 (t=240)</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image4.png" alt="Iterative step 5">
+                <figcaption>Iteration 20 (t=90)</figcaption>
+            </div>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="image-grid-item">
+                <img src="images/image13.png" alt="Final iterative result">
+                <figcaption>Final iterative denoising result</figcaption>
+            </div>
+        </div>
+
+        <h3>1.5 Diffusion Model Sampling</h3>
+        <p>
+            With the iterative denoising loop implemented, I can now use the diffusion model to generate entirely new images from scratch. The process begins with pure Gaussian noise (sampled at t=990) and progressively denoises it using the iterative procedure with <code>i_start=0</code>. This effectively samples from the learned distribution of natural images.
+        </p>
+
+        <p>
+            Using the neutral prompt "a high quality photo", I generated five sample images. While the model creates coherent images, without specific text guidance, the results are generic and sometimes nonsensical.
+        </p>
+
+        <div class="image-container">
+            <img src="images/image3.png" alt="Diffusion model sampling">
+            <figcaption>Five samples generated from pure noise using the prompt "a high quality photo"</figcaption>
+        </div>
+
+        <h3>1.6 Classifier-Free Guidance (CFG)</h3>
+        <p>
+            Classifier-Free Guidance (CFG) is a technique that dramatically improves sample quality by amplifying the effect of text conditioning. The key insight is to compute both conditional noise estimates ε<sub>c</sub> (conditioned on the text prompt) and unconditional noise estimates ε<sub>u</sub> (with an empty prompt), then extrapolate in the direction of the conditioning:
+        </p>
+
+        <div class="equation">
+            ε = ε<sub>u</sub> + γ (ε<sub>c</sub> - ε<sub>u</sub>)
+        </div>
+
+        <p>
+            The guidance scale γ controls the strength of conditioning. When γ = 1, I recover standard conditional sampling. For γ &gt; 1, I push the sample further toward the conditional distribution, trading some diversity for improved adherence to the prompt and higher perceptual quality. I used γ = 7 for our experiments. The images generated with CFG are significantly more coherent, detailed, and photorealistic compared to the results from Part 1.5. 
+        </p>
+
+        <div class="image-container">
+            <img src="images/image8.png" alt="Classifier-free guidance results">
+            <figcaption>Figure 1.6: Samples generated with classifier-free guidance (γ = 7)</figcaption>
+        </div>
+
+        <h3>1.7 Image-to-Image Translation</h3>
+        <p>
+            By taking a real image, adding noise to it, and then denoising with the iterative process, I can "edit" images by allowing the diffusion model to "hallucinate" new things. The amount of noise added controls the magnitude of the edit: more noise leads to larger changes, while less noise preserves more of the original image structure.
+        </p>
+
+        <p>
+            Starting with three test images and adding noise at different levels indexed by <code>i_start</code> ∈ {1, 3, 5, 7, 10, 20}, higher values of <code>i_start</code> correspond to less initial noise. I then applied the full denoising process with the prompt "a high quality photo", effectively projecting noisy versions of the images onto the natural image manifold.
+        </p>
+
+        <p>
+            The results reveal that at high noise levels (low <code>i_start</code>), the generated images are almost entirely new and bear little resemblance to the original. As I reduce the noise level (higher <code>i_start</code>), the outputs gradually converge toward the original images, with intermediate steps showing creative variations that maintain the semantic content while altering style and details.
+        </p>
+
+        <div class="image-container">
+            <img src="images/image17.png" alt="Image-to-image 1">
+            <figcaption>Campanile</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image38.png" alt="Image-to-image 2">
+            <figcaption>Taj Mahal</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image36.png" alt="Image-to-image 3">
+            <figcaption>Earth</figcaption>
+        </div>
+
+        <h4>1.7.1 Editing Hand-Drawn and Web Images</h4>
+        <p>
+            This image-to-image translation technique is particularly effective when applied to non-realistic inputs such as sketches, paintings, or simple drawings. 
+        </p>
+
+        <div class="image-container">
+            <img src="images/image46.png" alt="Hand-drawn result 1">
+            <figcaption>Oski the Bear</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image7.png" alt="Hand-drawn result 2">
+            <figcaption>Girl Drawn</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image40.png" alt="Hand-drawn result 3">
+            <figcaption>Penguin Drawn</figcaption>
+        </div>
+
+        <h4>1.7.2 Inpainting</h4>
+        <p>
+            Inpainting means selectively editing portions of an image while preserving others. Given a binary mask m, I can generate new content wherever m = 1 while keeping the original content where m = 0. The algorithm works by running the standard denoising loop, but after each denoising step, I replace the unmasked regions with the appropriately noised version of the original image:
+        </p>
+
+        <div class="equation">
+            x<sub>t</sub> ← m ⊙ x<sub>t</sub> + (1 - m) ⊙ forward(x<sub>orig</sub>, t)
+        </div>
+
+        <p>
+            This constraint ensures that the denoising process only modifies the masked region. I demonstrated inpainting on three test images, using masks that target specific regions for editing.
+        </p>
+
+        <div class="image-container">
+            <img src="images/image27.png" alt="Inpainting result 1">
+            <figcaption>Campanile Top Replaced</figcaption>
+        </div>
+        <div class="image-container">                
+            <img src="images/image39.png" alt="Inpainting result 2">
+            <figcaption>Penguins Turned into Children</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image41.png" alt="Inpainting result 3">
+            <figcaption>Oski Turned into a Lady</figcaption>
+        </div>
+
+        <h4>1.7.3 Text-Conditioned Image-to-Image Translation</h4>
+        <p>
+            Building on the image-to-image translation framework, I can add explicit text conditioning to guide the projection process. Rather than using the generic "a high quality photo" prompt, specified prompts allow for creative reinterpretations of input images.
+        </p>
+
+        <p>
+            I applied this technique to the three test images using the text prompt: "a comic-book style photo of spiderman".
+        </p>
+
+        <div class="image-container">
+            <img src="images/image12.png" alt="Text-conditioned 1">
+            <figcaption>Campanile into Spiderman</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image37.png" alt="Text-conditioned 2">
+            <figcaption>Oski the Bear into Spiderman</figcaption>
+        </div>
+        <div class="image-container">
+            <img src="images/image9.png" alt="Text-conditioned 3">
+            <figcaption>Penguins into a Man and Webs</figcaption>
+        </div>
+
+        <h3>1.8 Visual Anagrams</h3>
+        <p>
+            Visual anagrams are optical illusions where an image appears as one thing in its normal orientation but completely different when flipped or rotated.
+        </p>
+
+        <p>
+            The algorithm computes two separate noise estimates: ε<sub>1</sub> for the image in its normal orientation with prompt p<sub>1</sub>, and ε<sub>2</sub> for the vertically flipped image with prompt p<sub>2</sub>. I then average these estimates (after flipping ε<sub>2</sub> back) to get the final noise prediction:
+        </p>
+
+        <div class="equation">
+            ε<sub>1</sub> = UNet(x<sub>t</sub>, t, p<sub>1</sub>)<br>
+            ε<sub>2</sub> = flip(UNet(flip(x<sub>t</sub>), t, p<sub>2</sub>))<br>
+            ε = (ε<sub>1</sub> + ε<sub>2</sub>) / 2
+        </div>
+
+        <p>
+            This forces the denoising process to simultaneously satisfy two conflicting objectives, resulting in images that encode both prompts.
+        </p>
+
+        <div class="image-grid">
+            <div class="image-grid-item">
+                <img src="images/image26.png" alt="Visual anagram 1">
+                <figcaption>Normal: a photo of a water bottle <br>Flipped: a monet-style portrait of a vase</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image14.png" alt="Visual anagram 2">
+                <figcaption>Normal: a photo of a cardiogram<br>Flipped: a lithograph of a monkey</figcaption>
+            </div>
+        </div>
+
+        <h3>1.9 Hybrid Images</h3>
+        <p>
+            I implemented a diffusion-based approach to creating multi-scale images that appear different depending on viewing distance.
+        </p>
+
+        <p>
+            I compute two noise estimates with different prompts p<sub>1</sub> and p<sub>2</sub>, then create a hybrid by combining low frequencies from ε<sub>1</sub> with high frequencies from ε<sub>2</sub>:
+        </p>
+
+        <div class="equation">
+            ε<sub>1</sub> = UNet(x<sub>t</sub>, t, p<sub>1</sub>)<br>
+            ε<sub>2</sub> = UNet(x<sub>t</sub>, t, p<sub>2</sub>)<br>
+            ε = lowpass(ε<sub>1</sub>) + highpass(ε<sub>2</sub>)
+        </div>
+
+        <p>
+            Using Gaussian blur (kernel size 33, σ = 2) for frequency separation, we create hybrid images that reveal different content at different scales. When viewed from far away, the low-frequency prompt dominates; up close, the high-frequency details of the second prompt become apparent.
+        </p>
+
+        <div class="image-grid">
+            <div class="image-grid-item">
+                <img src="images/image21.png" alt="Hybrid image 1">
+                <figcaption>Far: a lithograph of a beanie<br>Close: a studio ghibli photo of a couple</figcaption>
+            </div>
+            <div class="image-grid-item">
+                <img src="images/image16.png" alt="Hybrid image 2">
+                <figcaption>Far: a photo of a cardiogram<br>Close: a comic-book style photo of spiderman</figcaption>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

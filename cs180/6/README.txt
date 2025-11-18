@@ -1,0 +1,1 @@
+Running cs180_proj5a.ipynb will go step by step and show the resulting images.
